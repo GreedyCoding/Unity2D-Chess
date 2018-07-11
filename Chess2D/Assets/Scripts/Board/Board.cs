@@ -39,7 +39,7 @@ public class Board : MonoBehaviour {
                 //Adding offset to x. If line is odd x gets offset by 1 creating the checkers pattern  
                 int finalX = x + offset;
                 //Changing the color of the cells
-                mAllCells[finalX, y].GetComponent<Image>().color = new Color(230, 150, 100, 255);
+                mAllCells[finalX, y].GetComponent<Image>().color = new Color32(186, 177, 150, 255);
 
             }
         }

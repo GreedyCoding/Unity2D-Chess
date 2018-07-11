@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 114150935429401340}
   - component: {fileID: 114493348357395740}
   m_Layer: 0
-  m_Name: PF_Board
+  m_Name: PR_Board
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

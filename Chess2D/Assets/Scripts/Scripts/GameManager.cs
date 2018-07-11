@@ -5,10 +5,12 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
 
     public Board mBoard;
+    public PieceManager mPieceManager;
 
 	void Start () {
 
         CreateBoard();
+        CreatePieces();
 
     }
 
@@ -17,7 +19,12 @@ public class GameManager : MonoBehaviour {
         if (mBoard != null){
             mBoard.Create();
         }
-        
+
+    }
+
+    private void CreatePieces() { 
+
+            mPieceManager.Setup(mBoard);
 
     }
 
