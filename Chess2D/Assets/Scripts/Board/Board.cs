@@ -5,14 +5,16 @@ using UnityEngine.UI;
 
 public class Board : MonoBehaviour {
 
+    //Creating a reference field for the cell prefab in the Unity Editor
     public GameObject mCellPrefab;
 
     [HideInInspector]
+    //Creating a two dimensional array to store the cells for the board
     public Cell[,] mAllCells = new Cell[8, 8];
 
 	public void Create() {
 		
-        //Creating the Cells
+        //Creating the all the cells
         for(int x = 0; x < 8; x++) {
             for(int y = 0; y < 8; y++) {
 
@@ -34,7 +36,7 @@ public class Board : MonoBehaviour {
         for(int x = 0; x < 8; x += 2) {
             for(int y = 0; y < 8; y++) {
 
-                //Checking if the row is odd or even and setting value to offset
+                //Checking if the row is odd or even and setting according value to offset variable
                 int offset = (y % 2 != 0) ? 0 : 1;
                 //Adding offset to x. If line is odd x gets offset by 1 creating the checkers pattern  
                 int finalX = x + offset;

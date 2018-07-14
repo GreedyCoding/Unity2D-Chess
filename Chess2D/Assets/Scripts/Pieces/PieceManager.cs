@@ -7,7 +7,9 @@ public class PieceManager : MonoBehaviour {
 
     public GameObject mPiecePrefab;
 
+    //List for the white pieces initally set to null
     private List<BasePiece> mWhitePieces = null;
+    //List for the black pieces initally set to null
     private List<BasePiece> mBlackPieces = null;
 
     //Laying out the Pieceorder in a String Array
@@ -18,12 +20,12 @@ public class PieceManager : MonoBehaviour {
 
     //Creating Dictionary that links the Strings from the Pieceorder to the actual Piecetypes
     private Dictionary<string, Type> mPieceLibrary = new Dictionary<string, Type>() {
-        {"P", typeof(Pawn)},
-        {"R", typeof(Rook)},
+        {"P",  typeof(Pawn)},
+        {"R",  typeof(Rook)},
         {"KN", typeof(Knight)},
-        {"B", typeof(Bishop)},
-        {"K", typeof(King)},
-        {"Q", typeof(Queen)}
+        {"B",  typeof(Bishop)},
+        {"K",  typeof(King)},
+        {"Q",  typeof(Queen)}
     };
 
     public void Setup(Board board) {
@@ -42,6 +44,7 @@ public class PieceManager : MonoBehaviour {
         //Creating a temporary list of the new pieces to return
         List<BasePiece> tempPieces = new List<BasePiece>();
 
+        //Setting up all the pieces
         for (int i = 0; i < mPieceOrder.Length; i++) {
 
             //Create new Object from Piece Prefab
