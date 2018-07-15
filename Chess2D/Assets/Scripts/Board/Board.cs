@@ -7,13 +7,17 @@ public class Board : MonoBehaviour {
 
     //Creating a reference field for the cell prefab in the Unity Editor
     public GameObject mCellPrefab;
+    private int maxXValue;
+    private int maxYValue;
 
     [HideInInspector]
     //Creating a two dimensional array to store the cells for the board
-    public Cell[,] mAllCells = new Cell[8, 8];
+    private Cell[,] mAllCells = new Cell[8, 8];
+
 
 	public void Create() {
 		
+        
         //Creating the all the cells
         for(int x = 0; x < 8; x++) {
             for(int y = 0; y < 8; y++) {
@@ -46,7 +50,20 @@ public class Board : MonoBehaviour {
             }
         }
 
+        this.maxXValue = this.mAllCells.GetLength(0) - 1;
+        this.maxYValue = this.mAllCells.GetLength(1) - 1;
+       
 	}
+
+    public Cell Get(int x,int y) {
+
+        if(x < 0 || x > maxXValue || y < 0 || y > maxYValue) {
+            return null;
+        }
+        else {
+            return this.mAllCells[x, y];
+        }
+    }
 	
 
 }

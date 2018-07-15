@@ -74,13 +74,22 @@ public class PieceManager : MonoBehaviour {
     }
 
     private void PlacePieces(int pawnRow, int royaltyRow, List<BasePiece> pieces, Board board) {
-
+        Cell pawnCell = null;
+        Cell royaltyCell = null;
         for (int i = 0; i < 8; i++) {
 
-            //Place the pawn row
-            pieces[i].Place(board.mAllCells[i, pawnRow]);
-            //Place the royalty row
-            pieces[i + 8].Place(board.mAllCells[i, royaltyRow]);
+            pawnCell = board.Get(i, pawnRow);
+            if (pawnCell != null) {
+                //Place the pawn row
+                pieces[i].Place(pawnCell);
+            }
+
+            royaltyCell = board.Get(i, royaltyRow);
+            if(royaltyCell != null) {
+                //Place the royalty row
+                pieces[i + 8].Place(royaltyCell);
+            }
+
 
         }
 

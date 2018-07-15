@@ -16,20 +16,24 @@ public class GameManager : MonoBehaviour {
     }
 
     private void CreateBoard() {
+        
+        //If there is no board created create a new board
+        if (mBoard != null) {
 
-       //If there is no board created create a new board
-       if (mBoard != null){
             mBoard.Create();
-       }
 
+        }
     }
 
     private void CreatePieces() {
 
-            //Setup the pieces on the passed in board    
-            mPieceManager.Setup(mBoard);
-            Debug.Log("Setup the pieces on the Board");
+        //If there is a board create the pieces   
+        if (mBoard != null) {
 
+            mPieceManager.Setup(mBoard);
+
+        }
+        
     }
 
 }
