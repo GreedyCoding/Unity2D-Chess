@@ -7,6 +7,8 @@ public class PieceManager : MonoBehaviour {
 
     public GameObject mPiecePrefab;
 
+    public bool kingsAreAlive = true;
+
     //List for the white pieces initally set to null
     private List<BasePiece> mWhitePieces = null;
     //List for the black pieces initally set to null
@@ -36,6 +38,8 @@ public class PieceManager : MonoBehaviour {
 
         PlacePieces(1, 0, mWhitePieces, board);
         PlacePieces(6, 7, mBlackPieces, board);
+
+        SwitchSides(Color.black);
 
     }
 
@@ -91,6 +95,46 @@ public class PieceManager : MonoBehaviour {
             }
 
 
+        }
+
+    }
+
+    private void SetActiveTeam(List<BasePiece> teamPieces, bool value) {
+
+        foreach (BasePiece piece in teamPieces) {
+            piece.enabled = value;
+        }
+
+    }
+
+    public void SwitchSides(Color color) {
+
+        if (!kingsAreAlive) {
+
+            ResetPieces();
+            //After resetting the board set the kings to alive again
+            kingsAreAlive = true;
+            //Set color to black so white can go first again
+            color = Color.black;
+
+        }
+
+        bool isBlackTurn = (color == Color.white) ? true : false;
+
+        SetActiveTeam(mWhitePieces, !isBlackTurn);
+        SetActiveTeam(mBlackPieces, isBlackTurn);
+
+    }
+
+    public void ResetPieces() {
+
+        foreach (BasePiece piece in mWhitePieces) {
+            piece.ResetPiece();
+            
+        }
+
+        foreach (BasePiece piece in mBlackPieces) {
+            piece.ResetPiece();
         }
 
     }

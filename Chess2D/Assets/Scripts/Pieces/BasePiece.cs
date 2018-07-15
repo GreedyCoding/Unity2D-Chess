@@ -20,6 +20,9 @@ public abstract class BasePiece : EventTrigger
     //Creating a reference field for the piecemanager in the Unity Editor
     protected PieceManager mPieceManager;
 
+    //Target Cell the mouse is hovering over
+    protected Cell mTargetCell = null;
+
     protected Vector3Int mMovement = Vector3Int.one;
     protected List<Cell> mHighlightedCells = new List<Cell>();
 
@@ -44,26 +47,51 @@ public abstract class BasePiece : EventTrigger
 
     }
 
+    public virtual void ResetPiece() {
+
+        Kill();
+
+        Place(mOriginalCell);
+
+    }
+
+    public virtual void Kill() {
+
+        //Clear the current cell
+        mCurrentCell.mCurrentPiece = null;
+
+        //Remove the piece by disabling it
+        gameObject.SetActive(false);
+
+    }
+
     private void CreateCellPath(int xDirection, int yDirection, int movement) {
 
         //Getting the x and y from the current cell the piece is on
-        int currentX = mCurrentCell.mBoardPosition.x;
-        int currentY = mCurrentCell.mBoardPosition.y;
-
-        Cell currentCell = null;
+        int targetX = mCurrentCell.mBoardPosition.x;
+        int targetY = mCurrentCell.mBoardPosition.y;
 
         //Loop through all the cells the piece can move to
         for(int i = 1; i <= movement; i++) {
 
-            currentX += xDirection;
-            currentY += yDirection;
+            targetX += xDirection;
+            targetY += yDirection;
 
-            currentCell = mCurrentCell.mBoard.Get(currentX, currentY);
+            CellState cellState = CellState.None;
+            cellState = mCurrentCell.mBoard.CheckCellState(targetX, targetY, this);
 
-            if (currentCell != null) {
-                mHighlightedCells.Add(currentCell);
+            if (cellState == CellState.Enemy) {
+
+                mHighlightedCells.Add(mCurrentCell.mBoard.Get(targetX, targetY));
+                break;
+
             }
 
+            if (cellState != CellState.Free) {
+                break;
+            }
+
+            mHighlightedCells.Add(mCurrentCell.mBoard.Get(targetX, targetY));
         }
 
     }
@@ -81,12 +109,12 @@ public abstract class BasePiece : EventTrigger
         CreateCellPath(0, -1, mMovement.y);
 
         //Upper Diagonal
-        CreateCellPath(1, 1, mMovement.x);
-        CreateCellPath(-1, 1, mMovement.x);
+        CreateCellPath(1, 1, mMovement.z);
+        CreateCellPath(-1, 1, mMovement.z);
 
         //Lower Diagonal
-        CreateCellPath(-1, -1, mMovement.x);
-        CreateCellPath(1, -1, mMovement.x);
+        CreateCellPath(-1, -1, mMovement.z);
+        CreateCellPath(1, -1, mMovement.z);
         
     }
 
@@ -108,6 +136,20 @@ public abstract class BasePiece : EventTrigger
 
     }
 
+    protected virtual void Move() {
+
+        mTargetCell.RemovePiece();
+
+        mCurrentCell.mCurrentPiece = null;
+
+        mCurrentCell = mTargetCell;
+        mCurrentCell.mCurrentPiece = this;
+
+        transform.position = mCurrentCell.transform.position;
+        mTargetCell = null;
+
+    }
+
     public override void OnBeginDrag(PointerEventData eventData) {
         base.OnBeginDrag(eventData);
 
@@ -121,8 +163,28 @@ public abstract class BasePiece : EventTrigger
     public override void OnDrag(PointerEventData eventData) {
         base.OnDrag(eventData);
 
-        //Set the position of the piece transform to the mouse position
-        transform.position += (Vector3)eventData.delta/90;
+
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        this.transform.position = new Vector3(ray.origin.x, ray.origin.y, 0);
+
+
+        ////Set the position of the piece transform to the mouse position
+        //this.transform.position += (Vector3)eventData.delta;
+
+        //Check for available squares under the mouse
+        foreach (Cell cell in mHighlightedCells) {
+            
+            if (RectTransformUtility.RectangleContainsScreenPoint(cell.mRectTransform, new Vector2(ray.origin.x, ray.origin.y))) {
+
+                mTargetCell = cell;
+                break;
+
+            }
+
+            mTargetCell = null;
+
+        }
 
     }
 
@@ -131,6 +193,17 @@ public abstract class BasePiece : EventTrigger
 
         //Clear all the highlihgte
         ClearHighlightedCells();
+
+        if (!mTargetCell) {
+
+            transform.position = mCurrentCell.gameObject.transform.position;
+            return;
+
+        }
+
+        Move();
+
+        mPieceManager.SwitchSides(mColor);
 
     }
 

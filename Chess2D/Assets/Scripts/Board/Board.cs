@@ -3,6 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum CellState {
+
+    None,
+    Friendly,
+    Enemy,
+    Free,
+    OutOfBounds
+
+}
+
 public class Board : MonoBehaviour {
 
     //Creating a reference field for the cell prefab in the Unity Editor
@@ -50,20 +60,38 @@ public class Board : MonoBehaviour {
             }
         }
 
-        this.maxXValue = this.mAllCells.GetLength(0) - 1;
-        this.maxYValue = this.mAllCells.GetLength(1) - 1;
-       
 	}
 
     public Cell Get(int x,int y) {
 
-        if(x < 0 || x > maxXValue || y < 0 || y > maxYValue) {
-            return null;
-        }
-        else {
-            return this.mAllCells[x, y];
-        }
+        return this.mAllCells[x, y];
+
     }
 	
+    public CellState CheckCellState(int targetX, int targetY, BasePiece checkingPiece) {
+
+        if (targetX < 0 || targetX > 7)
+            return CellState.OutOfBounds;
+
+        if (targetY < 0 || targetY > 7)
+            return CellState.OutOfBounds;
+
+        Cell targetCell = mAllCells[targetX, targetY];
+
+        if (targetCell.mCurrentPiece != null) {
+
+            if (checkingPiece.mColor == targetCell.mCurrentPiece.mColor) {
+                return CellState.Friendly;
+            }
+
+            if (checkingPiece.mColor != targetCell.mCurrentPiece.mColor) {
+                return CellState.Enemy;
+            }
+
+        }
+
+        return CellState.Free;
+
+    }
 
 }
