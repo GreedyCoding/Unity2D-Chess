@@ -7,7 +7,8 @@ public class GameManager : MonoBehaviour {
     public Board mBoard;
     public PieceManager mPieceManager;
 
-	void Start () {
+    //Gets called when the game is started
+    void Start () {
 
         CreateBoard();
         CreatePieces();
@@ -15,17 +16,24 @@ public class GameManager : MonoBehaviour {
     }
 
     private void CreateBoard() {
+        
+        //If there is no board created create a new board
+        if (mBoard != null) {
 
-        if (mBoard != null){
             mBoard.Create();
-        }
 
+        }
     }
 
-    private void CreatePieces() { 
+    private void CreatePieces() {
+
+        //If there is a board create the pieces   
+        if (mBoard != null) {
 
             mPieceManager.Setup(mBoard);
 
+        }
+        
     }
 
 }

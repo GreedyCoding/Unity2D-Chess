@@ -7,7 +7,11 @@ public class PieceManager : MonoBehaviour {
 
     public GameObject mPiecePrefab;
 
+    public bool kingsAreAlive = true;
+
+    //List for the white pieces initally set to null
     private List<BasePiece> mWhitePieces = null;
+    //List for the black pieces initally set to null
     private List<BasePiece> mBlackPieces = null;
 
     //Laying out the Pieceorder in a String Array
@@ -18,12 +22,12 @@ public class PieceManager : MonoBehaviour {
 
     //Creating Dictionary that links the Strings from the Pieceorder to the actual Piecetypes
     private Dictionary<string, Type> mPieceLibrary = new Dictionary<string, Type>() {
-        {"P", typeof(Pawn)},
-        {"R", typeof(Rook)},
+        {"P",  typeof(Pawn)},
+        {"R",  typeof(Rook)},
         {"KN", typeof(Knight)},
-        {"B", typeof(Bishop)},
-        {"K", typeof(King)},
-        {"Q", typeof(Queen)}
+        {"B",  typeof(Bishop)},
+        {"K",  typeof(King)},
+        {"Q",  typeof(Queen)}
     };
 
     public void Setup(Board board) {
@@ -35,6 +39,8 @@ public class PieceManager : MonoBehaviour {
         PlacePieces(1, 0, mWhitePieces, board);
         PlacePieces(6, 7, mBlackPieces, board);
 
+        SwitchSides(Color.black);
+
     }
 
     private List<BasePiece> CreatePieces(Color teamColor, Color32 spriteColor, Board board) {
@@ -42,6 +48,7 @@ public class PieceManager : MonoBehaviour {
         //Creating a temporary list of the new pieces to return
         List<BasePiece> tempPieces = new List<BasePiece>();
 
+        //Setting up all the pieces
         for (int i = 0; i < mPieceOrder.Length; i++) {
 
             //Create new Object from Piece Prefab
@@ -71,14 +78,63 @@ public class PieceManager : MonoBehaviour {
     }
 
     private void PlacePieces(int pawnRow, int royaltyRow, List<BasePiece> pieces, Board board) {
-
+        Cell pawnCell = null;
+        Cell royaltyCell = null;
         for (int i = 0; i < 8; i++) {
 
-            //Place the pawn row
-            pieces[i].Place(board.mAllCells[i, pawnRow]);
-            //Place the royalty row
-            pieces[i + 8].Place(board.mAllCells[i, royaltyRow]);
+            pawnCell = board.Get(i, pawnRow);
+            if (pawnCell != null) {
+                //Place the pawn row
+                pieces[i].Place(pawnCell);
+            }
 
+            royaltyCell = board.Get(i, royaltyRow);
+            if(royaltyCell != null) {
+                //Place the royalty row
+                pieces[i + 8].Place(royaltyCell);
+            }
+
+
+        }
+
+    }
+
+    private void SetActiveTeam(List<BasePiece> teamPieces, bool value) {
+
+        foreach (BasePiece piece in teamPieces) {
+            piece.enabled = value;
+        }
+
+    }
+
+    public void SwitchSides(Color color) {
+
+        if (!kingsAreAlive) {
+
+            ResetPieces();
+            //After resetting the board set the kings to alive again
+            kingsAreAlive = true;
+            //Set color to black so white can go first again
+            color = Color.black;
+
+        }
+
+        bool isBlackTurn = (color == Color.white) ? true : false;
+
+        SetActiveTeam(mWhitePieces, !isBlackTurn);
+        SetActiveTeam(mBlackPieces, isBlackTurn);
+
+    }
+
+    public void ResetPieces() {
+
+        foreach (BasePiece piece in mWhitePieces) {
+            piece.ResetPiece();
+            
+        }
+
+        foreach (BasePiece piece in mBlackPieces) {
+            piece.ResetPiece();
         }
 
     }

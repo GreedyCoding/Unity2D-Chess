@@ -7,7 +7,9 @@ public class SceneLoader : MonoBehaviour {
 
     public void LoadNextScene() {
 
+        //Gets the active scene in Unity and sets it to currentSceneIndex
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        //Add 1 to current Scene to load the next scene
         SceneManager.LoadScene(currentSceneIndex + 1);
 
     }
